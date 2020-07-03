@@ -8,22 +8,23 @@ using System.Text;
 using System.Windows.Forms;
 using ScreenShot.Layer;
 using ScreenShot.Layer.Base;
+using ScreenShot.Util;
 
 namespace ScreenShot
 {
-    public sealed partial class FormMain : Form
+    public sealed partial class Captor : Form
     {
         private readonly Image _baseImage;
 
         private Point _cursorLocation = Point.Empty;
 
-        private bool _isCapturing = false;
-        private readonly CaptureLayer _captureLayer;
-
         private bool _isExploring = false;
         private readonly ExploreLayer _exploreLayer;
 
-        public FormMain()
+        private bool _isCapturing = false;
+        private readonly CaptureLayer _captureLayer;
+
+        public Captor()
         {
             InitializeComponent();
             // 防止页面闪烁
@@ -35,7 +36,7 @@ namespace ScreenShot
             this.ShowInTaskbar = true; // 显示在任务栏
             this.WindowState = FormWindowState.Maximized;
             this.FormBorderStyle = FormBorderStyle.None;
-            this._baseImage = GetScreenImage();
+            this._baseImage = ImageUtil.GetScreenImage();
             this.BackgroundImage = this._baseImage;
             // Build Layers
             this._captureLayer = new CaptureLayer(this);
@@ -46,27 +47,6 @@ namespace ScreenShot
         {
             base.OnLoad(e);
             this._isExploring = true;
-        }
-
-        private static Image GetScreenImage()
-        {
-            Image img = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-            Graphics g = Graphics.FromImage(img);
-            g.CopyFromScreen(new Point(0, 0), new Point(0, 0), Screen.AllScreens[0].Bounds.Size);
-            return img;
-        }
-
-        private static Image GetTargetImage(Image baseImage, Rectangle rectangle)
-        {
-            Image image = new Bitmap(rectangle.Width, rectangle.Height);
-            using (Graphics g = Graphics.FromImage(image))
-            {
-                g.DrawImage(baseImage,
-                    0, 0,
-                    rectangle,
-                    GraphicsUnit.Pixel);
-            }
-            return image;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -86,7 +66,7 @@ namespace ScreenShot
                 this._isCapturing = false;
                 this._isExploring = false;
                 this.Hide();
-                using (FormEdit formEdit = new FormEdit(GetTargetImage(this._baseImage, capture)))
+                using (FormEdit formEdit = new FormEdit(ImageUtil.GetTargetImage(this._baseImage, capture)))
                 {
                     formEdit.ShowDialog();
                     this.Close();
@@ -138,6 +118,19 @@ namespace ScreenShot
             {
                 this.Close();
             }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ImageAcquiredEventArgs
+    {
+        public byte[] ImageData { get; }
+
+        public ImageAcquiredEventArgs(byte[] imageData)
+        {
+            ImageData = imageData;
         }
     }
 }

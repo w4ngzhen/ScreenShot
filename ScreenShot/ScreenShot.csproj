@@ -61,24 +61,34 @@
     </Compile>
     <Compile Include="ImageEditor.cs" />
     <Compile Include="Layer\Base\ExploreLayer.cs" />
-    <Compile Include="FormMain.cs">
+    <Compile Include="Captor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <Compile Include="Captor.Designer.cs">
+      <DependentUpon>Captor.cs</DependentUpon>
     </Compile>
     <Compile Include="Layer\Base\CaptureLayer.cs" />
     <Compile Include="Layer\LayerBase.cs" />
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\ImageUtil.cs" />
     <EmbeddedResource Include="ColorBox.resx">
       <DependentUpon>ColorBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormEdit.resx">
       <DependentUpon>FormEdit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <EmbeddedResource Include="Captor.resx">
+      <DependentUpon>Captor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
