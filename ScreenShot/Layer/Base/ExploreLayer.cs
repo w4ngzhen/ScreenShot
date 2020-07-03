@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace ScreenShot.Layer
+namespace ScreenShot.Layer.Base
 {
     public abstract class ExploreLayer : LayerBase
     {

@@ -15,6 +15,7 @@ namespace ScreenShot
         public FormEdit()
         {
             InitializeComponent();
+            this.WindowState = FormWindowState.Maximized;
         }
 
         public FormEdit(Image baseImage) : this()
@@ -22,6 +23,7 @@ namespace ScreenShot
             this._baseImage = baseImage;
             this.pictureBox1.Size = this._baseImage.Size;
             this.pictureBox1.Location = new Point(5, 5);
+            this.pictureBox1.Image = this._baseImage;
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ScreenShot.Layer;
-using ScreenShot.Layer.Impl;
+using ScreenShot.Layer.Base;
 
 namespace ScreenShot
 {
@@ -61,7 +61,10 @@ namespace ScreenShot
             Image image = new Bitmap(rectangle.Width, rectangle.Height);
             using (Graphics g = Graphics.FromImage(image))
             {
-                g.DrawImage(baseImage, 0, 0, rectangle, GraphicsUnit.Pixel);
+                g.DrawImage(baseImage,
+                    0, 0,
+                    rectangle,
+                    GraphicsUnit.Pixel);
             }
             return image;
         }
