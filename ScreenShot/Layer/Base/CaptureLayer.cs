@@ -10,39 +10,29 @@ namespace ScreenShot.Layer.Base
 
         public Rectangle Capture => _capture;
 
-        public Point Start
-        {
-            get => Capture.Location;
-            set
-            {
-                this._capture.Location = value;
-                this._capture.Size = Size.Empty;
-            }
-        }
-
         private readonly CaptureConfig _captureConfig;
 
-        public CaptureLayer(Control ctrl) : base(ctrl)
+        public CaptureLayer(Size size) : base(size)
         {
             this._captureConfig = new CaptureConfig();
         }
 
-        public override void OnPaint(Point cursor, Graphics g)
+        public override void OnPaint(Graphics g)
         {
-            Point start = this.Capture.Location;
-            int width = Math.Abs(start.X - cursor.X);
-            int height = Math.Abs(start.Y - cursor.Y);
+            Point start = this.InitCursor;
+            int width = Math.Abs(start.X - this.CurrentCursor.X);
+            int height = Math.Abs(start.Y - this.CurrentCursor.Y);
             this._capture = new Rectangle(start.X, start.Y, width, height);
             g.DrawRectangle(this._captureConfig.RedPen, this._capture);
-            this.PaintInfo(cursor, this._capture.Size, g);
+            this.PaintInfo(g);
         }
 
-        private void PaintInfo(Point cursor, Size captureSize, Graphics g)
+        private void PaintInfo(Graphics g)
         {
-            string info = captureSize.Width + " x "+ captureSize.Height;
+            string info = this._capture.Width + " x "+ this._capture.Height;
             // 计算指定字体下字符串的高度和宽度（包含padding）
             SizeF sizeF = g.MeasureString(info, this._captureConfig.InfoFont);
-            Point infoStart = new Point(cursor.X + 10, cursor.Y - (int) sizeF.Height);
+            Point infoStart = new Point(this.CurrentCursor.X + 10, this.CurrentCursor.Y - (int) sizeF.Height);
             RectangleF infoRect = new RectangleF(infoStart, sizeF);
             // 绘制背景
             g.FillRectangle(this._captureConfig.YellowBrush, infoRect);

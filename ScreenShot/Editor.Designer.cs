@@ -1,6 +1,6 @@
 ﻿namespace ScreenShot
 {
-    partial class Main
+    partial class Editor
     {
         /// <summary>
         /// Required designer variable.
@@ -28,21 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this._toolBox = new ScreenShot.ToolBox();
             this.SuspendLayout();
             // 
-            // Main
+            // _toolBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this._toolBox.Location = new System.Drawing.Point(25, 133);
+            this._toolBox.Name = "_toolBox";
+            this._toolBox.Size = new System.Drawing.Size(285, 28);
+            this._toolBox.TabIndex = 0;
+            this._toolBox.TabStop = false;
+            // 
+            // Editor
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(442, 308);
-            this.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Name = "Main";
-            this.Text = "Main";
+            this.ClientSize = new System.Drawing.Size(333, 254);
+            this.Controls.Add(this._toolBox);
+            this.Name = "Editor";
+            this.Text = "Editor";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Editor_KeyDown);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private ToolBox _toolBox;
     }
 }

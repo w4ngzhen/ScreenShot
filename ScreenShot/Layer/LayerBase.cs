@@ -5,23 +5,25 @@ namespace ScreenShot.Layer
 {
     public abstract class LayerBase
     {
-        protected readonly Control Ctrl;
+        public Point InitCursor { get; set; }
 
-        protected Size Size => this.Ctrl.Size;
+        public Point CurrentCursor { get; set; }
 
-        protected LayerBase(Control ctrl)
+        public Size Size { get; }
+
+        protected LayerBase(Size size)
         {
-            Ctrl = ctrl;
+            this.Size = size;
         }
 
-        public virtual void OnPaint(Point cursor, Graphics g)
+        public virtual void OnPaint(Graphics g)
         {
             return;
         }
 
-        public virtual void Invalidate(Point cursor)
+        public virtual void Invalidate(Control control)
         {
-            this.Ctrl.Invalidate();
+            control.Invalidate();
         }
     }
 }

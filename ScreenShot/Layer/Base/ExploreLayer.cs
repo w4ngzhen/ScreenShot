@@ -5,41 +5,39 @@ namespace ScreenShot.Layer.Base
 {
     public abstract class ExploreLayer : LayerBase
     {
-        protected ExploreLayer(Control ctrl) : base(ctrl) { }
+        protected ExploreLayer(Size size) : base(size)
+        {
+        }
     }
 
     public class MaskExploreLayer : ExploreLayer
     {
-        public MaskExploreLayer(Control ctrl) : base(ctrl) { }
-
-        public override void OnPaint(Point cursor, Graphics g)
+        public MaskExploreLayer(Size size) : base(size)
+        {
+        }
+        public override void OnPaint(Graphics g)
         {
             SolidBrush brush = new SolidBrush(Color.FromArgb(88, Color.Gray));
             g.FillRectangle(brush, new Rectangle(0, 0, this.Size.Width, this.Size.Height));
-        }
-
-        public override void Invalidate(Point cursor)
-        {
-            this.Ctrl.Invalidate();
         }
     }
 
     public class LineExploreLayer : ExploreLayer
     {
-        public LineExploreLayer(Control ctrl) : base(ctrl)
+        public LineExploreLayer(Size size) : base(size)
         {
         }
 
-        public override void OnPaint(Point cursor, Graphics g)
+        public override void OnPaint(Graphics g)
         {
             Pen pen = new Pen(new SolidBrush(Color.DeepSkyBlue));
-            g.DrawLine(pen, new Point(cursor.X, 0), new Point(cursor.X, this.Size.Height));
-            g.DrawLine(pen, new Point(0, cursor.Y), new Point(this.Size.Width, cursor.Y));
+            g.DrawLine(pen, new Point(this.CurrentCursor.X, 0), new Point(this.CurrentCursor.X, this.Size.Height));
+            g.DrawLine(pen, new Point(0, this.CurrentCursor.Y), new Point(this.Size.Width, this.CurrentCursor.Y));
         }
 
-        public override void Invalidate(Point cursor)
+        public override void Invalidate(Control control)
         {
-            this.Ctrl.Invalidate();
+            base.Invalidate(control);
 //            const int areaWidth = 1000;
 //            const int offset = areaWidth / 2;
 //            Rectangle verticalRect = new Rectangle(new Point(cursor.X, 0), new Size(areaWidth, this.Size.Height));

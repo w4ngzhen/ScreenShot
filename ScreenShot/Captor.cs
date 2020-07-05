@@ -8,21 +8,20 @@ using System.Text;
 using System.Windows.Forms;
 using ScreenShot.Layer;
 using ScreenShot.Layer.Base;
+using ScreenShot.Layer.Edit;
 using ScreenShot.Util;
 
 namespace ScreenShot
 {
     public sealed partial class Captor : Form
     {
-        private readonly Image _baseImage;
-
-        private Point _cursorLocation = Point.Empty;
+        private Image _baseImage;
 
         private bool _isExploring = false;
-        private readonly ExploreLayer _exploreLayer;
+        private ExploreLayer _exploreLayer;
 
         private bool _isCapturing = false;
-        private readonly CaptureLayer _captureLayer;
+        private CaptureLayer _captureLayer;
 
         public Captor()
         {
@@ -36,17 +35,25 @@ namespace ScreenShot
             this.ShowInTaskbar = true; // 显示在任务栏
             this.WindowState = FormWindowState.Maximized;
             this.FormBorderStyle = FormBorderStyle.None;
+            this.Init();
+        }
+
+        private void Init()
+        {
             this._baseImage = ImageUtil.GetScreenImage();
             this.BackgroundImage = this._baseImage;
-            // Build Layers
-            this._captureLayer = new CaptureLayer(this);
-            this._exploreLayer = new LineExploreLayer(this);
+
+            // Init Status
+            this._isExploring = true;
+            this._isCapturing = false;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            this._isExploring = true;
+            // Build Layers
+            this._captureLayer = new CaptureLayer(this.Size);
+            this._exploreLayer = new LineExploreLayer(this.Size);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -54,7 +61,7 @@ namespace ScreenShot
             base.OnMouseDown(e);
             this._isCapturing = true;
             this._isExploring = false;
-            this._captureLayer.Start = e.Location;
+            this._captureLayer.InitCursor = e.Location;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -63,16 +70,16 @@ namespace ScreenShot
             Rectangle capture = this._captureLayer.Capture;
             if (capture.Width > 0 && capture.Height > 0)
             {
-                this._isCapturing = false;
-                this._isExploring = false;
-                this.Hide();
-                using (FormEdit formEdit = new FormEdit(ImageUtil.GetTargetImage(this._baseImage, capture)))
+                using (Editor editor = new Editor(this._baseImage, capture))
                 {
-                    formEdit.ShowDialog();
-                    this.Close();
+                    editor.EditorClose += (sender, args) =>
+                    {
+                        this._isExploring = true;
+                        this._isCapturing = false;
+                    };
+                    editor.ShowDialog();
                 }
             }
-
             this._isExploring = true;
             this._isCapturing = false;
         }
@@ -81,7 +88,9 @@ namespace ScreenShot
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            this._cursorLocation = e.Location;
+            Point current = e.Location;
+            this._exploreLayer.CurrentCursor = current;
+            this._captureLayer.CurrentCursor = current;
             this.InvalidateLayers();
         }
 
@@ -89,12 +98,12 @@ namespace ScreenShot
         {
             if (this._isExploring)
             {
-                this._exploreLayer.Invalidate(this._cursorLocation);
+                this._exploreLayer.Invalidate(this);
             }
 
             if (this._isCapturing)
             {
-                this._captureLayer.Invalidate(this._cursorLocation);
+                this._captureLayer.Invalidate(this);
             }
         }
 
@@ -103,16 +112,16 @@ namespace ScreenShot
             base.OnPaint(e);
             if (this._isExploring)
             {
-                this._exploreLayer?.OnPaint(this._cursorLocation, e.Graphics);
+                this._exploreLayer?.OnPaint(e.Graphics);
             }
 
             if (this._isCapturing)
             {
-                this._captureLayer?.OnPaint(this._cursorLocation, e.Graphics);
+                this._captureLayer?.OnPaint(e.Graphics);
             }
         }
 
-        private void FormMain_KeyDown(object sender, KeyEventArgs e)
+        private void Captor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
@@ -121,16 +130,5 @@ namespace ScreenShot
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class ImageAcquiredEventArgs
-    {
-        public byte[] ImageData { get; }
-
-        public ImageAcquiredEventArgs(byte[] imageData)
-        {
-            ImageData = imageData;
-        }
-    }
+ 
 }
