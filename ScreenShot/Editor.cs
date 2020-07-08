@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using ScreenShot.Layer.Edit;
-using ScreenShot.Layer.Edit.Impl;
+using ScreenShot.Core.Layer.Edit;
+using ScreenShot.Core.Layer.Edit.Impl;
 
 namespace ScreenShot
 {
@@ -68,7 +64,7 @@ namespace ScreenShot
             this._editLayers.ForEach(historyLayer => historyLayer.Editing = false);
             this._editLayers.Add(new RectEditLayer(this.Size)
             {
-                InitCursor = e.Location
+                InitLocation = e.Location
             });
         }
 
@@ -78,7 +74,7 @@ namespace ScreenShot
             EditLayer editingLayer = this._editLayers.Find(one => one.Editing);
             if (editingLayer != null)
             {
-                editingLayer.CurrentCursor = e.Location;
+                editingLayer.CurrentLocation = e.Location;
             }
             this.InvalidateLayers();
         }

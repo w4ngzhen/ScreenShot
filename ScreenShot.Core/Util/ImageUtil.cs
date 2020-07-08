@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Forms;
 
-namespace ScreenShot.Util
+namespace ScreenShot.Core.Util
 {
     public class ImageUtil
     {
@@ -24,6 +26,19 @@ namespace ScreenShot.Util
                     GraphicsUnit.Pixel);
             }
             return image;
+        }
+
+        public static byte[] GetTargetImageToBytes(Image baseImage, Rectangle rectangle)
+        {
+            Image targetImage = GetTargetImage(baseImage, rectangle);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                targetImage.Save(ms, ImageFormat.Jpeg);
+                byte[] data = new byte[ms.Length];
+                ms.Seek(0, SeekOrigin.Begin);
+                ms.Read(data, 0, data.Length);
+                return data;
+            }
         }
     }
 }

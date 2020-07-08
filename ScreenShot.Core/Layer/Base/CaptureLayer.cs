@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 
-namespace ScreenShot.Layer.Base
+namespace ScreenShot.Core.Layer.Base
 {
     public class CaptureLayer : LayerBase
     {
@@ -19,10 +18,11 @@ namespace ScreenShot.Layer.Base
 
         public override void OnPaint(Graphics g)
         {
-            Point start = this.InitCursor;
-            int width = Math.Abs(start.X - this.CurrentCursor.X);
-            int height = Math.Abs(start.Y - this.CurrentCursor.Y);
-            this._capture = new Rectangle(start.X, start.Y, width, height);
+            int width = Math.Abs(this.CurrentLocation.X - this.InitLocation.X);
+            int height = Math.Abs(this.CurrentLocation.Y - this.InitLocation.Y);
+            int x = Math.Min(this.CurrentLocation.X, this.InitLocation.X);
+            int y = Math.Min(this.CurrentLocation.Y, this.InitLocation.Y);
+            this._capture = new Rectangle(x, y, width, height);
             g.DrawRectangle(this._captureConfig.RedPen, this._capture);
             this.PaintInfo(g);
         }
@@ -32,7 +32,7 @@ namespace ScreenShot.Layer.Base
             string info = this._capture.Width + " x "+ this._capture.Height;
             // 计算指定字体下字符串的高度和宽度（包含padding）
             SizeF sizeF = g.MeasureString(info, this._captureConfig.InfoFont);
-            Point infoStart = new Point(this.CurrentCursor.X + 10, this.CurrentCursor.Y - (int) sizeF.Height);
+            Point infoStart = new Point(this.CurrentLocation.X + 10, this.CurrentLocation.Y - (int) sizeF.Height);
             RectangleF infoRect = new RectangleF(infoStart, sizeF);
             // 绘制背景
             g.FillRectangle(this._captureConfig.YellowBrush, infoRect);

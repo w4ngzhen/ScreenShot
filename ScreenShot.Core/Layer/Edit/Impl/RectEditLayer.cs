@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 
-namespace ScreenShot.Layer.Edit.Impl
+namespace ScreenShot.Core.Layer.Edit.Impl
 {
     public class RectEditLayer : EditLayer
     {
@@ -18,9 +17,9 @@ namespace ScreenShot.Layer.Edit.Impl
 
         public override void OnEditingPaint(Graphics g)
         {
-            Point start = this.InitCursor;
-            int width = Math.Abs(start.X - this.CurrentCursor.X);
-            int height = Math.Abs(start.Y - this.CurrentCursor.Y);
+            Point start = this.InitLocation;
+            int width = Math.Abs(start.X - this.CurrentLocation.X);
+            int height = Math.Abs(start.Y - this.CurrentLocation.Y);
             this._capture = new Rectangle(start.X, start.Y, width, height);
             g.DrawRectangle(new Pen(Color.Red), this.Capture);
         }

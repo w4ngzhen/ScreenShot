@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace ScreenShot.Layer.Base
+namespace ScreenShot.Core.Layer.Base
 {
     public abstract class ExploreLayer : LayerBase
     {
@@ -31,8 +31,8 @@ namespace ScreenShot.Layer.Base
         public override void OnPaint(Graphics g)
         {
             Pen pen = new Pen(new SolidBrush(Color.DeepSkyBlue));
-            g.DrawLine(pen, new Point(this.CurrentCursor.X, 0), new Point(this.CurrentCursor.X, this.Size.Height));
-            g.DrawLine(pen, new Point(0, this.CurrentCursor.Y), new Point(this.Size.Width, this.CurrentCursor.Y));
+            g.DrawLine(pen, new Point(this.CurrentLocation.X, 0), new Point(this.CurrentLocation.X, this.Size.Height));
+            g.DrawLine(pen, new Point(0, this.CurrentLocation.Y), new Point(this.Size.Width, this.CurrentLocation.Y));
         }
 
         public override void Invalidate(Control control)

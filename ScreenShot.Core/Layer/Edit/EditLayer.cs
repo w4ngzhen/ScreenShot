@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
-using System.Windows.Forms;
 
-namespace ScreenShot.Layer.Edit
+namespace ScreenShot.Core.Layer.Edit
 {
     public abstract class EditLayer : LayerBase
     {

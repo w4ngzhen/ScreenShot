@@ -1,13 +1,13 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace ScreenShot.Layer
+namespace ScreenShot.Core.Layer
 {
     public abstract class LayerBase
     {
-        public Point InitCursor { get; set; }
+        public Point InitLocation { get; set; }
 
-        public Point CurrentCursor { get; set; }
+        public Point CurrentLocation { get; set; }
 
         public Size Size { get; }
 

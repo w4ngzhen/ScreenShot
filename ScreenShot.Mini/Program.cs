@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace ScreenShot
+namespace ScreenShot.Mini
 {
-    internal static class Program
+    static class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -13,7 +13,12 @@ namespace ScreenShot
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Captor());
+            MiniCaptor miniCaptor = new MiniCaptor();
+            miniCaptor.ImageDataAcquired += (sender, args) =>
+            {
+                MessageBox.Show(@"Image Acquired! Image byte data length: " + args.ImageData.Length);
+            };
+            Application.Run(miniCaptor);
         }
     }
 }

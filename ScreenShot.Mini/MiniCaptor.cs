@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using ScreenShot.Core.Event;
 using ScreenShot.Core.Layer.Base;
+using ScreenShot.Core.Layer.Edit.Impl;
 using ScreenShot.Core.Util;
 
-namespace ScreenShot
+namespace ScreenShot.Mini
 {
-    public sealed partial class Captor : Form
+    public sealed partial class MiniCaptor : Form
     {
+
+        public event EventHandler<ImageDataAcquiredEventArgs> ImageDataAcquired;
+
         private Image _baseImage;
 
         private bool _isExploring = false;
@@ -16,7 +21,10 @@ namespace ScreenShot
         private bool _isCapturing = false;
         private CaptureLayer _captureLayer;
 
-        public Captor()
+        private bool _isCaptured = false;
+        private DefaultEditLayer _defaultEditLayer;
+
+        public MiniCaptor()
         {
             InitializeComponent();
             // 防止页面闪烁
@@ -39,6 +47,7 @@ namespace ScreenShot
             // Init Status
             this._isExploring = true;
             this._isCapturing = false;
+            this._isCaptured = false;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -52,8 +61,9 @@ namespace ScreenShot
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            this._isCapturing = true;
             this._isExploring = false;
+            this._isCapturing = true;
+            this._isCaptured = false;
             this._captureLayer.InitLocation = e.Location;
         }
 
@@ -63,18 +73,17 @@ namespace ScreenShot
             Rectangle capture = this._captureLayer.Capture;
             if (capture.Width > 0 && capture.Height > 0)
             {
-                using (Editor editor = new Editor(this._baseImage, capture))
-                {
-                    editor.EditorClose += (sender, args) =>
-                    {
-                        this._isExploring = true;
-                        this._isCapturing = false;
-                    };
-                    editor.ShowDialog();
-                }
+                this._isExploring = false;
+                this._isCapturing = false;
+                this._isCaptured = true;
+                this._defaultEditLayer = new DefaultEditLayer(this.Size, capture);
             }
-            this._isExploring = true;
-            this._isCapturing = false;
+            else
+            {
+                this._isExploring = true;
+                this._isCapturing = false;
+                this._isCaptured = false;
+            }
         }
 
 
@@ -91,12 +100,17 @@ namespace ScreenShot
         {
             if (this._isExploring)
             {
-                this._exploreLayer.Invalidate(this);
+                this._exploreLayer?.Invalidate(this);
             }
 
             if (this._isCapturing)
             {
-                this._captureLayer.Invalidate(this);
+                this._captureLayer?.Invalidate(this);
+            }
+
+            if (this._isCaptured)
+            {
+                this._defaultEditLayer?.Invalidate(this);
             }
         }
 
@@ -112,14 +126,52 @@ namespace ScreenShot
             {
                 this._captureLayer?.OnPaint(e.Graphics);
             }
-        }
 
-        private void Captor_KeyDown(object sender, KeyEventArgs e)
+            if (this._isCaptured)
+            {
+                this._defaultEditLayer?.OnPaint(e.Graphics);
+            }
+        }
+        private void MiniCaptor_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode != Keys.Escape && e.KeyCode != Keys.Space)
+            {
+                return;
+            }
+
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close();
+                if (this._isCapturing || this._isCaptured)
+                {
+                    this._isCapturing = this._isCaptured = false;
+                    this._defaultEditLayer = null;
+                    this._isExploring = true;
+                    this.Invalidate();
+                    return;
+                }
+
+                if (this._isExploring)
+                {
+                    this.Close();
+                }
             }
+            else
+            {
+                if (!this._isCaptured)
+                {
+                    return;
+                }
+                this._isCaptured = this._isCapturing = false;
+                this._isExploring = true;
+                byte[] imageData =
+                    ImageUtil.GetTargetImageToBytes(this._baseImage, this._captureLayer.Capture);
+                OnImageDataAcquired(new ImageDataAcquiredEventArgs(imageData));
+            }
+        }
+
+        private void OnImageDataAcquired(ImageDataAcquiredEventArgs e)
+        {
+            ImageDataAcquired?.Invoke(this, e);
         }
     }
 }
