@@ -32,12 +32,14 @@
             // 
             // Captor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(195, 84);
+            this.ClientSize = new System.Drawing.Size(367, 278);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Captor";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "截图";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Captor_KeyDown);
             this.ResumeLayout(false);

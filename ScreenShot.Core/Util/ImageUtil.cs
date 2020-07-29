@@ -7,8 +7,9 @@ namespace ScreenShot.Core.Util
 {
     public class ImageUtil
     {
-        public static Image GetScreenImage()
+        public static Image GetScreenImage(out Rectangle virtualScreen)
         {
+            virtualScreen = SystemInformation.VirtualScreen;
             Image img = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             Graphics g = Graphics.FromImage(img);
             g.CopyFromScreen(new Point(0, 0), new Point(0, 0), Screen.AllScreens[0].Bounds.Size);

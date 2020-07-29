@@ -32,18 +32,19 @@ namespace ScreenShot.Mini
                 ControlStyles.OptimizedDoubleBuffer
                 | ControlStyles.AllPaintingInWmPaint
                 | ControlStyles.UserPaint, true);
-//            this.TopMost = true; // 置为顶层
+            // this.TopMost = true; // 置为顶层
             this.ShowInTaskbar = true; // 显示在任务栏
-            this.WindowState = FormWindowState.Maximized;
-            this.FormBorderStyle = FormBorderStyle.None;
+            // 不要使用最大化，否则导致多屏幕下，无法设置CaptorForm的Size和Location
+            // this.WindowState = FormWindowState.Maximized; 
             this.Init();
         }
 
         private void Init()
         {
-            this._baseImage = ImageUtil.GetScreenImage();
+            this._baseImage = ImageUtil.GetScreenImage(out Rectangle virtualScreen);
             this.BackgroundImage = this._baseImage;
-
+            this.Size = virtualScreen.Size;
+            this.Location = virtualScreen.Location;
             // Init Status
             this._isExploring = true;
             this._isCapturing = false;
